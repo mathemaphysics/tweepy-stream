@@ -8,7 +8,6 @@ import json
 import dataset as ds
 import sqlite3 as sql # Dealt with now by dataset module
 import pandas as pd
-#from difflib import SequenceMatcher as sm
 from readsec import read_tokens
 
 #Import the necessary methods from tweepy library
@@ -21,6 +20,10 @@ from tweepy import Stream
 from tweepy.streaming import StreamListener
 import exception
 import tweepy.error
+
+# Import routines for the workers tor un
+import tweepymod as tm
+#from tweepymod import classify_tweet
 
 HOME = "/home/rpdaly"
 accf = HOME + "/.twitter_oauth"
@@ -36,18 +39,13 @@ class StdOutListener(StreamListener):
         print("Initializing database")
         self.db = ds.connect("sqlite:///kratom_tweetset.db")
         self.tbl = self.db["tweets"]
+        self.conn = Redis('127.0.0.1', 6379)
+        self.queue = Queue('high', connection=self.conn)
         return True
 
     def on_status(self, status):
-        print("User = %s" % status.user.name)
-        print("Text = %s" % status.text)
-        txt = TextBlob(status.text)
-        print("Polr = %8.4f" % txt.sentiment.polarity)
-        print("Subj = %8.4f" % txt.sentiment.subjectivity)
-        d = dict(name=status.user.name, text=status.text,
-                 subjectivity=txt.sentiment.subjectivity,
-                 polarity=txt.sentiment.polarity)
-        self.tbl.insert(d)
+        print("Saved %s" % status.user.name)
+        self.queue.enqueue_call(func=tm.classify_tweet, args=(status, self))
         return True
 
     def on_error(self, status):
