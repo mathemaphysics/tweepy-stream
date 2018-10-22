@@ -21,7 +21,6 @@ from tweepy import Stream
 from tweepy.streaming import StreamListener
 import exception
 import tweepy.error
-import urllib3.exceptions
 
 HOME = "/home/rpdaly"
 accf = HOME + "/.twitter_oauth"
