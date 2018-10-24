@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+
 import os
 import sys
 import time
+import numpy as np
 from termcolor import cprint
 
 from testmod import ret_a_val, write_val
@@ -16,6 +18,9 @@ q2 = Queue('high', connection=con1)
 for i in range(20):
     j1 = q1.enqueue(ret_a_val)
     j2 = q2.enqueue(ret_a_val)
+    #time.sleep(1)
+    #print("%r" % j1.result)
+    #print("%r" % j2.result)
     while not j1.is_finished or not j2.is_finished:
         time.sleep(0.01)
     print()

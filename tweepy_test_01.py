@@ -22,9 +22,9 @@ import exception
 import tweepy.error
 
 # Import routines for the workers tor un
-import tweepymod as tm
-#from tweepymod import classify_tweet
+from tweepymod import StdOutListener
 
+#from tweepymod import classify_tweet
 HOME = "/home/rpdaly"
 accf = HOME + "/.twitter_oauth"
 conf = HOME + "/.twitter_consumer"
@@ -33,36 +33,18 @@ conf = HOME + "/.twitter_consumer"
 (CONSUMER_KEY, CONSUMER_SECRET) = read_tokens(conf)
 
 #This is a basic listener that just prints received tweets to stdout.
-class StdOutListener(StreamListener):
-
-    def on_connect(self):
-        print("Initializing database")
-        self.db = ds.connect("sqlite:///kratom_tweetset.db")
-        self.tbl = self.db["tweets"]
-        self.conn = Redis('127.0.0.1', 6379)
-        self.queue = Queue('high', connection=self.conn)
-        return True
-
-    def on_status(self, status):
-        print("Saved %s" % status.user.name)
-        self.queue.enqueue_call(func=tm.classify_tweet, args=(status, self))
-        return True
-
-    def on_error(self, status):
-        print(status)
-        time.sleep(5)
-        return True
-
 if __name__ == '__main__':
 
     while True:
         try:
+            #queue = Queue('high', connection=Redis('127.0.0.1', 6379))
+            #dbase = sql.connect('kratom_tweetset.db')
             l = StdOutListener()
             auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
             stream = Stream(auth, l)
-            stream.filter(track=['Kavanaugh','Trump'],
-                          stall_warnings=False)
+            stream.filter(track=['Kavanaugh','Trump'])
+
         except Exception as ex:
             print("Error: Restarting stream")
             print(ex)
