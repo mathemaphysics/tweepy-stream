@@ -27,8 +27,6 @@ conf = HOME + "/.twitter-consumer-api"
 
 (ACCESS_TOKEN, ACCESS_SECRET) = read_tokens(accf)
 (CONSUMER_KEY, CONSUMER_SECRET) = read_tokens(conf)
-print(ACCESS_TOKEN, ACCESS_SECRET)
-print(CONSUMER_KEY, CONSUMER_SECRET)
 
 #This is a basic listener that just prints received tweets to stdout.
 if __name__ == '__main__':
