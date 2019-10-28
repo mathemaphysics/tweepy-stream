@@ -15,7 +15,7 @@ con1 = Redis('192.168.2.122', 6380, password='SXY+GnkMVYoJ7hSb3V565')
 q1 = Queue('low', connection=con1)
 q2 = Queue('high', connection=con1)
 
-for i in range(2):
+for i in range(20):
     j1 = q1.enqueue(ret_a_val)
     j2 = q2.enqueue(ret_a_val)
     while not j1.is_finished or not j2.is_finished:

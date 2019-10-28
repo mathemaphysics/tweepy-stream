@@ -1,47 +1,45 @@
 #!/usr/bin/env python3
 
-# Generic shit
+# Generics
 import os
 import sys
+sys.path.append('./temp')
 import time
-import json
-import dataset as ds
-import sqlite3 as sql # Dealt with now by dataset module
 import pandas as pd
 from readsec import read_tokens
 
 #Import the necessary methods from tweepy library
-from redis import Redis
-from rq import Queue
-from rq.decorators import job
-from textblob import TextBlob
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 import exception
 import tweepy.error
 
-# Import routines for the workers tor un
-from tweepymod import StdOutListener
+# This is ridiculous
+class MyStreamListener(tweepy.StreamListener):
+    def on_status(self, status):
+        print(status.text)
 
 #from tweepymod import classify_tweet
 HOME = "/home/rpdaly"
-accf = HOME + "/.twitter_oauth"
-conf = HOME + "/.twitter_consumer"
+accf = HOME + "/.twitter-access-api"
+conf = HOME + "/.twitter-consumer-api"
 
 (ACCESS_TOKEN, ACCESS_SECRET) = read_tokens(accf)
 (CONSUMER_KEY, CONSUMER_SECRET) = read_tokens(conf)
+print(ACCESS_TOKEN, ACCESS_SECRET)
+print(CONSUMER_KEY, CONSUMER_SECRET)
 
 #This is a basic listener that just prints received tweets to stdout.
 if __name__ == '__main__':
 
     while True:
         try:
-            l = StdOutListener()
+            l = MyStreamListener()
             auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
             stream = Stream(auth, l)
-            stream.filter(track=['Kavanaugh','Trump'])
+            stream.filter(track=['Trump'])
 
         except Exception as ex:
             print("Error: Restarting stream")
