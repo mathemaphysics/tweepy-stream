@@ -8,7 +8,7 @@ import time
 import pandas as pd
 from readsec import read_tokens
 
-#Import the necessary methods from tweepy library
+# Import the necessary methods from tweepy library
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
@@ -37,7 +37,7 @@ if __name__ == '__main__':
             auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
             stream = Stream(auth, l)
-            stream.filter(track=['Trump'])
+            stream.filter(track=['Trump', 'moron'])
 
         except Exception as ex:
             print("Error: Restarting stream")
